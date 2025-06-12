@@ -1267,3 +1267,76 @@ Object.prototype.clone = function () {
     }
     return newObj;
 };
+
+
+// Create mobile control buttons
+function createTouchControls() {
+    var controls = document.createElement('div');
+    controls.id = 'mobile-controls';
+    
+    // Add control styles to head
+    var style = document.createElement('style');
+    style.textContent = `
+        #mobile-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+        .d-pad {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .d-pad-row {
+            display: flex;
+            gap: 15px;
+            margin: 5px 0;
+        }
+        .d-pad button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid #fff;
+            touch-action: manipulation;
+        }
+    `;
+    document.head.appendChild(style);
+
+    controls.innerHTML = `
+        <div class="d-pad">
+            <div class="d-pad-row">
+                <button class="up" ontouchstart="handleTouch('UP')" ontouchend="handleTouch('NONE')"></button>
+            </div>
+            <div class="d-pad-row">
+                <button class="left" ontouchstart="handleTouch('LEFT')" ontouchend="handleTouch('NONE')"></button>
+                <button class="right" ontouchstart="handleTouch('RIGHT')" ontouchend="handleTouch('NONE')"></button>
+            </div>
+            <div class="d-pad-row">
+                <button class="down" ontouchstart="handleTouch('DOWN')" ontouchend="handleTouch('NONE')"></button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(controls);
+}
+
+// Touch direction handler
+function handleTouch(direction) {
+    var keyMap = {
+        'UP': 38,
+        'DOWN': 40,
+        'LEFT': 37,
+        'RIGHT': 39,
+        'NONE': NONE
+    };
+    keyPressed(keyMap[direction]);
+}
+
+// Initialize touch controls when DOM loads
+if (document.readyState === 'complete') {
+    createTouchControls();
+} else {
+    window.addEventListener('load', createTouchControls);
+}
